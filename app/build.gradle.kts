@@ -8,7 +8,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
 }
 
-val projectName = "MiniScreen"
+val projectName = "NotiBot"
 val apkFileName = "$projectName.apk"
 val currentBuildTime: String = SimpleDateFormat("yy/MM/dd HH:mm:ss").format(Date())
 val currentVersionDate: Int = SimpleDateFormat("yyMMdd").format(Date()).toInt()
