@@ -1,0 +1,78 @@
+<resources>
+    <string name="app_name">通知测试工具</string>
+    
+    <!-- 主界面 -->
+    <string name="custom_notification">自定义通知</string>
+    <string name="notification_title_hint">通知标题</string>
+    <string name="notification_content_hint">通知内容</string>
+    <string name="notification_importance">通知重要性</string>
+    <string name="send_now">立即发送通知</string>
+    
+    <string name="delayed_notification">延迟通知</string>
+    <string name="delay_seconds_hint">延迟时间（秒）</string>
+    <string name="send_delayed">发送延迟通知</string>
+    
+    <string name="random_notification">随机通知</string>
+    <string name="interval_seconds_hint">间隔时间（秒）</string>
+    <string name="start_random">开始随机通知</string>
+    <string name="stop_random">停止随机通知</string>
+    
+    <string name="status_label">状态: %1$s</string>
+    <string name="status_ready">就绪</string>
+    <string name="status_notification_sent">已发送即时通知</string>
+    <string name="status_delayed_notification_set">已设置延迟通知（%1$d秒后）</string>
+    <string name="status_random_started">已开始随机通知（每%1$d秒）</string>
+    <string name="status_random_stopped">已停止随机通知</string>
+    <string name="status_random_running">随机通知运行中</string>
+    <string name="status_permissions_granted">所有权限已授予</string>
+    <string name="status_permissions_denied">部分权限被拒绝，功能可能受限</string>
+    
+    <!-- 通知重要性 -->
+    <string name="importance_high">高重要性</string>
+    <string name="importance_default">默认</string>
+    <string name="importance_low">低重要性</string>
+    <string name="importance_min">静默</string>
+    
+    <!-- 通知默认内容 -->
+    <string name="default_notification_title">测试通知</string>
+    <string name="default_notification_content">这是一条测试通知</string>
+    <string name="default_delayed_title">延迟通知</string>
+    <string name="default_delayed_content">这是一条延迟通知</string>
+    
+    <!-- 服务通知 -->
+    <string name="service_notification_title">通知测试服务运行中</string>
+    <string name="service_notification_content">点击返回应用</string>
+    
+    <!-- 通知渠道 -->
+    <string name="channel_high_name">高重要性通知</string>
+    <string name="channel_high_description">高优先级通知，带声音和浮动通知</string>
+    <string name="channel_default_name">默认通知</string>
+    <string name="channel_default_description">默认优先级通知</string>
+    <string name="channel_low_name">低重要性通知</string>
+    <string name="channel_low_description">低优先级通知，无声音</string>
+    <string name="channel_min_name">静默通知</string>
+    <string name="channel_min_description">静默通知，不会打扰用户</string>
+    <string name="channel_service_name">后台服务</string>
+    <string name="channel_service_description">保持应用在后台运行</string>
+    
+    <!-- 随机通知内容 -->
+    <string name="random_title_1">随机通知 %1$d</string>
+    <string name="random_title_2">测试消息 %1$d</string>
+    <string name="random_title_3">系统提醒 %1$d</string>
+    <string name="random_title_4">应用通知 %1$s</string>
+    <string name="random_title_5">重要提示 %1$d</string>
+    
+    <string name="random_content_1">这是一条随机生成的测试通知内容</string>
+    <string name="random_content_2">当前时间: %1$s</string>
+    <string name="random_content_3">随机数字: %1$d</string>
+    <string name="random_content_4">测试通知功能是否正常工作</string>
+    <string name="random_content_5">后台服务正在运行中…</string>
+    
+    <!-- 菜单 -->
+    <string name="action_about">关于</string>
+    
+    <!-- 关于对话框 -->
+    <string name="about_title">关于</string>
+    <string name="about_message">应用名称: %1$s\n应用版本: %2$s\n构建时间: %3$s\n应用作者: @TheDeathDragon\n\n本应用旨在提供一个简单易用的通知测试工具\n帮助安卓系统工程师和开发者测试和调试通知功能</string>
+    <string name="ok">确定</string>
+</resources>

@@ -20,7 +20,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
-            android:text="自定义通知"
+            android:text="@string/custom_notification"
             android:textAlignment="center"
             android:textSize="18sp"
             android:textStyle="bold" />
@@ -30,7 +30,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
-            android:hint="通知标题"
+            android:hint="@string/notification_title_hint"
             android:inputType="text" />
 
         <EditText
@@ -38,7 +38,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
-            android:hint="通知内容"
+            android:hint="@string/notification_content_hint"
             android:inputType="textMultiLine"
             android:minLines="1" />
 
@@ -47,13 +47,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
-            android:text="立即发送通知" />
+            android:text="@string/send_now" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
-            android:text="通知重要性"
+            android:text="@string/notification_importance"
             android:textAlignment="center"
             android:textSize="18sp"
             android:textStyle="bold" />
@@ -69,7 +69,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
-            android:text="延迟通知"
+            android:text="@string/delayed_notification"
             android:textAlignment="center"
             android:textSize="18sp"
             android:textStyle="bold" />
@@ -79,7 +79,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
-            android:hint="延迟时间（秒）"
+            android:hint="@string/delay_seconds_hint"
             android:inputType="number"
             android:text="5" />
 
@@ -88,14 +88,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
-            android:text="发送延迟通知" />
+            android:text="@string/send_delayed" />
 
         <!-- 随机通知部分 -->
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
-            android:text="随机通知"
+            android:text="@string/random_notification"
             android:textAlignment="center"
             android:textSize="18sp"
             android:textStyle="bold" />
@@ -105,7 +105,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
-            android:hint="间隔时间（秒）"
+            android:hint="@string/interval_seconds_hint"
             android:inputType="number"
             android:text="10" />
 
@@ -121,7 +121,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
                 android:layout_weight="1"
-                android:text="开始随机通知" />
+                android:text="@string/start_random" />
 
             <Button
                 android:id="@+id/stopRandomButton"
@@ -129,7 +129,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:enabled="false"
-                android:text="停止随机通知" />
+                android:text="@string/stop_random" />
 
         </LinearLayout>
 
@@ -141,7 +141,7 @@
             android:layout_marginTop="8dp"
             android:background="@android:drawable/editbox_background"
             android:padding="8dp"
-            android:text="状态: 就绪"
+            android:text="@string/status_ready"
             android:textSize="14sp" />
 
     </LinearLayout>

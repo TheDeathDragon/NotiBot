@@ -62,10 +62,10 @@ class NotificationService : Service() {
     private fun createServiceChannel() {
         val channel = NotificationChannel(
             SERVICE_CHANNEL_ID,
-            "后台服务",
+            getString(R.string.channel_service_name),
             NotificationManager.IMPORTANCE_LOW
         ).apply {
-            description = "保持应用在后台运行"
+            description = getString(R.string.channel_service_description)
         }
 
         val notificationManager = getSystemService(NotificationManager::class.java)
@@ -74,8 +74,8 @@ class NotificationService : Service() {
 
     private fun createForegroundNotification(): Notification {
         return NotificationCompat.Builder(this, SERVICE_CHANNEL_ID)
-            .setContentTitle("通知测试服务运行中")
-            .setContentText("点击返回应用")
+            .setContentTitle(getString(R.string.service_notification_title))
+            .setContentText(getString(R.string.service_notification_content))
             .setSmallIcon(R.drawable.ic_info)
             .setContentIntent(createPendingIntent())
             .setOngoing(true)
@@ -91,16 +91,16 @@ class NotificationService : Service() {
     }
 
     private fun sendNotificationNow(intent: Intent) {
-        val title = intent.getStringExtra(EXTRA_TITLE) ?: "测试通知"
-        val content = intent.getStringExtra(EXTRA_CONTENT) ?: "这是一条测试通知"
+        val title = intent.getStringExtra(EXTRA_TITLE) ?: getString(R.string.default_notification_title)
+        val content = intent.getStringExtra(EXTRA_CONTENT) ?: getString(R.string.default_notification_content)
         val importance = intent.getIntExtra(EXTRA_IMPORTANCE, 1)
         
         showNotification(title, content, importance)
     }
 
     private fun sendDelayedNotification(intent: Intent) {
-        val title = intent.getStringExtra(EXTRA_TITLE) ?: "延迟通知"
-        val content = intent.getStringExtra(EXTRA_CONTENT) ?: "这是一条延迟通知"
+        val title = intent.getStringExtra(EXTRA_TITLE) ?: getString(R.string.default_delayed_title)
+        val content = intent.getStringExtra(EXTRA_CONTENT) ?: getString(R.string.default_delayed_content)
         val importance = intent.getIntExtra(EXTRA_IMPORTANCE, 1)
         val delay = intent.getLongExtra(EXTRA_DELAY, 5000)
         
@@ -165,19 +165,19 @@ class NotificationService : Service() {
 
     private fun showRandomNotification() {
         val randomTitles = listOf(
-            "随机通知 ${Random.nextInt(100)}",
-            "测试消息 ${System.currentTimeMillis() % 1000}",
-            "系统提醒 ${Random.nextInt(1000)}",
-            "应用通知 ${Date()}",
-            "重要提示 ${Random.nextInt(10)}"
+            getString(R.string.random_title_1, Random.nextInt(100)),
+            getString(R.string.random_title_2, System.currentTimeMillis() % 1000),
+            getString(R.string.random_title_3, Random.nextInt(1000)),
+            getString(R.string.random_title_4, Date().toString()),
+            getString(R.string.random_title_5, Random.nextInt(10))
         )
 
         val randomContents = listOf(
-            "这是一条随机生成的测试通知内容",
-            "当前时间: ${Date()}",
-            "随机数字: ${Random.nextInt(10000)}",
-            "测试通知功能是否正常工作",
-            "后台服务正在运行中..."
+            getString(R.string.random_content_1),
+            getString(R.string.random_content_2, Date().toString()),
+            getString(R.string.random_content_3, Random.nextInt(10000)),
+            getString(R.string.random_content_4),
+            getString(R.string.random_content_5)
         )
 
         val title = randomTitles.random()

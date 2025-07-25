@@ -1,3 +1,78 @@
 <resources>
     <string name="app_name">NotiBot</string>
+    
+    <!-- Main screen -->
+    <string name="custom_notification">Custom Notification</string>
+    <string name="notification_title_hint">Notification Title</string>
+    <string name="notification_content_hint">Notification Content</string>
+    <string name="notification_importance">Notification Importance</string>
+    <string name="send_now">Send Now</string>
+    
+    <string name="delayed_notification">Delayed Notification</string>
+    <string name="delay_seconds_hint">Delay (seconds)</string>
+    <string name="send_delayed">Send Delayed</string>
+    
+    <string name="random_notification">Random Notification</string>
+    <string name="interval_seconds_hint">Interval (seconds)</string>
+    <string name="start_random">Start Random</string>
+    <string name="stop_random">Stop Random</string>
+    
+    <string name="status_label">Status: %1$s</string>
+    <string name="status_ready">Ready</string>
+    <string name="status_notification_sent">Notification sent</string>
+    <string name="status_delayed_notification_set">Delayed notification set (%1$d seconds)</string>
+    <string name="status_random_started">Random notifications started (every %1$d seconds)</string>
+    <string name="status_random_stopped">Random notifications stopped</string>
+    <string name="status_random_running">Random notifications running</string>
+    <string name="status_permissions_granted">All permissions granted</string>
+    <string name="status_permissions_denied">Some permissions denied, features may be limited</string>
+    
+    <!-- Notification importance -->
+    <string name="importance_high">High</string>
+    <string name="importance_default">Default</string>
+    <string name="importance_low">Low</string>
+    <string name="importance_min">Silent</string>
+    
+    <!-- Default notification content -->
+    <string name="default_notification_title">Test Notification</string>
+    <string name="default_notification_content">This is a test notification</string>
+    <string name="default_delayed_title">Delayed Notification</string>
+    <string name="default_delayed_content">This is a delayed notification</string>
+    
+    <!-- Service notification -->
+    <string name="service_notification_title">Notification Test Service Running</string>
+    <string name="service_notification_content">Tap to return to app</string>
+    
+    <!-- Notification channels -->
+    <string name="channel_high_name">High Importance</string>
+    <string name="channel_high_description">High priority notifications with sound and heads-up display</string>
+    <string name="channel_default_name">Default Notifications</string>
+    <string name="channel_default_description">Default priority notifications</string>
+    <string name="channel_low_name">Low Importance</string>
+    <string name="channel_low_description">Low priority notifications without sound</string>
+    <string name="channel_min_name">Silent Notifications</string>
+    <string name="channel_min_description">Silent notifications that won\'t disturb the user</string>
+    <string name="channel_service_name">Background Service</string>
+    <string name="channel_service_description">Keeps the app running in the background</string>
+    
+    <!-- Random notification content -->
+    <string name="random_title_1">Random Notification %1$d</string>
+    <string name="random_title_2">Test Message %1$d</string>
+    <string name="random_title_3">System Alert %1$d</string>
+    <string name="random_title_4">App Notification %1$s</string>
+    <string name="random_title_5">Important Notice %1$d</string>
+    
+    <string name="random_content_1">This is a randomly generated test notification</string>
+    <string name="random_content_2">Current time: %1$s</string>
+    <string name="random_content_3">Random number: %1$d</string>
+    <string name="random_content_4">Testing notification functionality</string>
+    <string name="random_content_5">Background service is running…</string>
+    
+    <!-- Menu -->
+    <string name="action_about">About</string>
+    
+    <!-- About dialog -->
+    <string name="about_title">About</string>
+    <string name="about_message">App Name: %1$s\nApp Version: %2$s\nBuild Time: %3$s\nApp Author: @TheDeathDragon\n\nThis app provides a simple and easy-to-use notification testing tool\nto help Android system engineers and developers test and debug notification features</string>
+    <string name="ok">OK</string>
 </resources>

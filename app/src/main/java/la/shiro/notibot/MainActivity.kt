@@ -61,7 +61,7 @@ class MainActivity : AppCompatActivity() {
         if (isRandomNotificationRunning) {
             binding.startRandomButton.isEnabled = false
             binding.stopRandomButton.isEnabled = true
-            updateStatus("随机通知运行中")
+            updateStatus(getString(R.string.status_random_running))
         } else {
             binding.startRandomButton.isEnabled = true
             binding.stopRandomButton.isEnabled = false
@@ -69,7 +69,12 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupSpinner() {
-        val importanceLevels = arrayOf("高重要性", "默认", "低重要性", "静默")
+        val importanceLevels = arrayOf(
+            getString(R.string.importance_high),
+            getString(R.string.importance_default),
+            getString(R.string.importance_low),
+            getString(R.string.importance_min)
+        )
         val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, importanceLevels)
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         binding.importanceSpinner.adapter = adapter
@@ -88,38 +93,38 @@ class MainActivity : AppCompatActivity() {
         // 高重要性通道
         val highChannel = NotificationChannel(
             CHANNEL_ID_HIGH,
-            "高重要性通知",
+            getString(R.string.channel_high_name),
             NotificationManager.IMPORTANCE_HIGH
         ).apply {
-            description = "高优先级通知，带声音和浮动通知"
+            description = getString(R.string.channel_high_description)
             enableVibration(true)
         }
 
         // 默认通道
         val defaultChannel = NotificationChannel(
             CHANNEL_ID_DEFAULT,
-            "默认通知",
+            getString(R.string.channel_default_name),
             NotificationManager.IMPORTANCE_DEFAULT
         ).apply {
-            description = "默认优先级通知"
+            description = getString(R.string.channel_default_description)
         }
 
         // 低重要性通道
         val lowChannel = NotificationChannel(
             CHANNEL_ID_LOW,
-            "低重要性通知",
+            getString(R.string.channel_low_name),
             NotificationManager.IMPORTANCE_LOW
         ).apply {
-            description = "低优先级通知，无声音"
+            description = getString(R.string.channel_low_description)
         }
 
         // 最小重要性通道（静默）
         val minChannel = NotificationChannel(
             CHANNEL_ID_MIN,
-            "静默通知",
+            getString(R.string.channel_min_name),
             NotificationManager.IMPORTANCE_MIN
         ).apply {
-            description = "静默通知，不会打扰用户"
+            description = getString(R.string.channel_min_description)
         }
 
         notificationManager.createNotificationChannels(
@@ -160,8 +165,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun sendNotificationNow() {
-        val title = binding.titleEditText.text.toString().ifEmpty { "测试通知" }
-        val content = binding.contentEditText.text.toString().ifEmpty { "这是一条测试通知" }
+        val title = binding.titleEditText.text.toString().ifEmpty { getString(R.string.default_notification_title) }
+        val content = binding.contentEditText.text.toString().ifEmpty { getString(R.string.default_notification_content) }
         val importance = binding.importanceSpinner.selectedItemPosition
 
         val intent = Intent(this, NotificationService::class.java).apply {
@@ -172,12 +177,12 @@ class MainActivity : AppCompatActivity() {
         }
         
         ContextCompat.startForegroundService(this, intent)
-        updateStatus("已发送即时通知")
+        updateStatus(getString(R.string.status_notification_sent))
     }
 
     private fun sendDelayedNotification() {
-        val title = binding.titleEditText.text.toString().ifEmpty { "延迟通知" }
-        val content = binding.contentEditText.text.toString().ifEmpty { "这是一条延迟通知" }
+        val title = binding.titleEditText.text.toString().ifEmpty { getString(R.string.default_delayed_title) }
+        val content = binding.contentEditText.text.toString().ifEmpty { getString(R.string.default_delayed_content) }
         val importance = binding.importanceSpinner.selectedItemPosition
         val delay = binding.delayEditText.text.toString().toLongOrNull() ?: 5
 
@@ -190,7 +195,7 @@ class MainActivity : AppCompatActivity() {
         }
         
         ContextCompat.startForegroundService(this, intent)
-        updateStatus("已设置延迟通知（${delay}秒后）")
+        updateStatus(getString(R.string.status_delayed_notification_set, delay.toInt()))
     }
 
     private fun startRandomNotifications() {
@@ -202,7 +207,7 @@ class MainActivity : AppCompatActivity() {
         }
         
         ContextCompat.startForegroundService(this, intent)
-        updateStatus("已开始随机通知（每${interval}秒）")
+        updateStatus(getString(R.string.status_random_started, interval.toInt()))
         
         isRandomNotificationRunning = true
         sharedPrefs.edit {
@@ -220,7 +225,7 @@ class MainActivity : AppCompatActivity() {
         }
         
         startService(intent)
-        updateStatus("已停止随机通知")
+        updateStatus(getString(R.string.status_random_stopped))
         
         isRandomNotificationRunning = false
         sharedPrefs.edit { putBoolean(PREF_RANDOM_RUNNING, false) }
@@ -230,7 +235,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun updateStatus(message: String) {
-        binding.statusTextView.text = "状态: $message"
+        binding.statusTextView.text = getString(R.string.status_label, message)
     }
 
     override fun onRequestPermissionsResult(
@@ -242,9 +247,9 @@ class MainActivity : AppCompatActivity() {
         if (requestCode == NOTIFICATION_PERMISSION_REQUEST) {
             val allGranted = grantResults.all { it == PackageManager.PERMISSION_GRANTED }
             if (allGranted) {
-                updateStatus("所有权限已授予")
+                updateStatus(getString(R.string.status_permissions_granted))
             } else {
-                updateStatus("部分权限被拒绝，功能可能受限")
+                updateStatus(getString(R.string.status_permissions_denied))
             }
         }
     }
@@ -269,20 +274,12 @@ class MainActivity : AppCompatActivity() {
         val buildTime = BuildConfig.BUILD_TIME
         val appName = BuildConfig.APP_NAME
         
-        val message = """
-            应用名称: $appName
-            应用版本: $versionName
-            构建时间: $buildTime
-            应用作者: @TheDeathDragon
-            
-            本应用旨在提供一个简单易用的通知测试工具
-            帮助安卓系统工程师和开发者测试和调试通知功能
-        """.trimIndent()
+        val message = getString(R.string.about_message, appName, versionName, buildTime)
         
         AlertDialog.Builder(this)
-            .setTitle("关于")
+            .setTitle(getString(R.string.about_title))
             .setMessage(message)
-            .setPositiveButton("确定", null)
+            .setPositiveButton(getString(R.string.ok), null)
             .show()
     }
 }
