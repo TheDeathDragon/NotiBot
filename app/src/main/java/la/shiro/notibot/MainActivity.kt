@@ -3,27 +3,24 @@ package la.shiro.notibot
 import android.Manifest
 import android.app.NotificationChannel
 import android.app.NotificationManager
-import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.PowerManager
 import android.provider.Settings
-import android.widget.*
+import android.view.Menu
+import android.view.MenuItem
+import android.widget.ArrayAdapter
 import androidx.activity.enableEdgeToEdge
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import java.util.*
+import androidx.core.content.edit
 import androidx.core.net.toUri
 import la.shiro.notibot.databinding.ActivityMainBinding
-import androidx.appcompat.app.AlertDialog
-import androidx.core.content.edit
-import android.view.Menu
-import android.view.MenuItem
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
@@ -48,7 +45,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         sharedPrefs = getSharedPreferences(PREF_NAME, MODE_PRIVATE)
-        
+
         setupSpinner()
         setupClickListeners()
         createNotificationChannels()
@@ -57,7 +54,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun restoreState() {
-        isRandomNotificationRunning = sharedPrefs.getBoolean(PREF_RANDOM_RUNNING, false)
+        isRandomNotificationRunning = NotificationService.isRandomNotificationActive
         if (isRandomNotificationRunning) {
             binding.startRandomButton.isEnabled = false
             binding.stopRandomButton.isEnabled = true
@@ -65,6 +62,7 @@ class MainActivity : AppCompatActivity() {
         } else {
             binding.startRandomButton.isEnabled = true
             binding.stopRandomButton.isEnabled = false
+            updateStatus(getString(R.string.status_ready))
         }
     }
 
@@ -83,6 +81,10 @@ class MainActivity : AppCompatActivity() {
     private fun setupClickListeners() {
         binding.sendNowButton.setOnClickListener { sendNotificationNow() }
         binding.sendDelayedButton.setOnClickListener { sendDelayedNotification() }
+        binding.sendTwoActionsButton.setOnClickListener { sendNotificationWithTwoActions() }
+        binding.sendOneActionButton.setOnClickListener { sendNotificationWithOneAction() }
+        binding.sendLargeIconButton.setOnClickListener { sendNotificationWithLargeIcon() }
+        binding.sendFullScreenButton.setOnClickListener { sendFullScreenNotification() }
         binding.startRandomButton.setOnClickListener { startRandomNotifications() }
         binding.stopRandomButton.setOnClickListener { stopRandomNotifications() }
     }
@@ -137,16 +139,17 @@ class MainActivity : AppCompatActivity() {
 
         // 通知权限
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) 
-                != PackageManager.PERMISSION_GRANTED) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
+                != PackageManager.PERMISSION_GRANTED
+            ) {
                 permissionsToRequest.add(Manifest.permission.POST_NOTIFICATIONS)
             }
         }
 
         if (permissionsToRequest.isNotEmpty()) {
             ActivityCompat.requestPermissions(
-                this, 
-                permissionsToRequest.toTypedArray(), 
+                this,
+                permissionsToRequest.toTypedArray(),
                 NOTIFICATION_PERMISSION_REQUEST
             )
         }
@@ -165,8 +168,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun sendNotificationNow() {
-        val title = binding.titleEditText.text.toString().ifEmpty { getString(R.string.default_notification_title) }
-        val content = binding.contentEditText.text.toString().ifEmpty { getString(R.string.default_notification_content) }
+        val title = binding.titleEditText.text.toString()
+            .ifEmpty { getString(R.string.default_notification_title) }
+        val content = binding.contentEditText.text.toString()
+            .ifEmpty { getString(R.string.default_notification_content) }
         val importance = binding.importanceSpinner.selectedItemPosition
 
         val intent = Intent(this, NotificationService::class.java).apply {
@@ -175,14 +180,16 @@ class MainActivity : AppCompatActivity() {
             putExtra(NotificationService.EXTRA_CONTENT, content)
             putExtra(NotificationService.EXTRA_IMPORTANCE, importance)
         }
-        
+
         ContextCompat.startForegroundService(this, intent)
         updateStatus(getString(R.string.status_notification_sent))
     }
 
     private fun sendDelayedNotification() {
-        val title = binding.titleEditText.text.toString().ifEmpty { getString(R.string.default_delayed_title) }
-        val content = binding.contentEditText.text.toString().ifEmpty { getString(R.string.default_delayed_content) }
+        val title = binding.titleEditText.text.toString()
+            .ifEmpty { getString(R.string.default_delayed_title) }
+        val content = binding.contentEditText.text.toString()
+            .ifEmpty { getString(R.string.default_delayed_content) }
         val importance = binding.importanceSpinner.selectedItemPosition
         val delay = binding.delayEditText.text.toString().toLongOrNull() ?: 5
 
@@ -193,7 +200,7 @@ class MainActivity : AppCompatActivity() {
             putExtra(NotificationService.EXTRA_IMPORTANCE, importance)
             putExtra(NotificationService.EXTRA_DELAY, delay * 1000) // 转换为毫秒
         }
-        
+
         ContextCompat.startForegroundService(this, intent)
         updateStatus(getString(R.string.status_delayed_notification_set, delay.toInt()))
     }
@@ -205,16 +212,16 @@ class MainActivity : AppCompatActivity() {
             action = NotificationService.ACTION_START_RANDOM
             putExtra(NotificationService.EXTRA_INTERVAL, interval * 1000) // 转换为毫秒
         }
-        
+
         ContextCompat.startForegroundService(this, intent)
         updateStatus(getString(R.string.status_random_started, interval.toInt()))
-        
+
         isRandomNotificationRunning = true
         sharedPrefs.edit {
             putBoolean(PREF_RANDOM_RUNNING, true)
                 .putLong(PREF_RANDOM_INTERVAL, interval * 1000)
         }
-        
+
         binding.startRandomButton.isEnabled = false
         binding.stopRandomButton.isEnabled = true
     }
@@ -223,15 +230,87 @@ class MainActivity : AppCompatActivity() {
         val intent = Intent(this, NotificationService::class.java).apply {
             action = NotificationService.ACTION_STOP_RANDOM
         }
-        
+
         startService(intent)
         updateStatus(getString(R.string.status_random_stopped))
-        
+
         isRandomNotificationRunning = false
         sharedPrefs.edit { putBoolean(PREF_RANDOM_RUNNING, false) }
-        
+
         binding.startRandomButton.isEnabled = true
         binding.stopRandomButton.isEnabled = false
+    }
+
+    private fun sendNotificationWithTwoActions() {
+        val title = binding.titleEditText.text.toString()
+            .ifEmpty { getString(R.string.default_notification_title) }
+        val content = binding.contentEditText.text.toString()
+            .ifEmpty { getString(R.string.default_notification_content) }
+        val importance = binding.importanceSpinner.selectedItemPosition
+
+        val intent = Intent(this, NotificationService::class.java).apply {
+            action = NotificationService.ACTION_SEND_TWO_ACTIONS
+            putExtra(NotificationService.EXTRA_TITLE, title)
+            putExtra(NotificationService.EXTRA_CONTENT, content)
+            putExtra(NotificationService.EXTRA_IMPORTANCE, importance)
+        }
+
+        ContextCompat.startForegroundService(this, intent)
+        updateStatus(getString(R.string.status_two_actions_sent))
+    }
+
+    private fun sendNotificationWithOneAction() {
+        val title = binding.titleEditText.text.toString()
+            .ifEmpty { getString(R.string.default_notification_title) }
+        val content = binding.contentEditText.text.toString()
+            .ifEmpty { getString(R.string.default_notification_content) }
+        val importance = binding.importanceSpinner.selectedItemPosition
+
+        val intent = Intent(this, NotificationService::class.java).apply {
+            action = NotificationService.ACTION_SEND_ONE_ACTION
+            putExtra(NotificationService.EXTRA_TITLE, title)
+            putExtra(NotificationService.EXTRA_CONTENT, content)
+            putExtra(NotificationService.EXTRA_IMPORTANCE, importance)
+        }
+
+        ContextCompat.startForegroundService(this, intent)
+        updateStatus(getString(R.string.status_one_action_sent))
+    }
+
+    private fun sendNotificationWithLargeIcon() {
+        val title = binding.titleEditText.text.toString()
+            .ifEmpty { getString(R.string.default_notification_title) }
+        val content = binding.contentEditText.text.toString()
+            .ifEmpty { getString(R.string.default_notification_content) }
+        val importance = binding.importanceSpinner.selectedItemPosition
+
+        val intent = Intent(this, NotificationService::class.java).apply {
+            action = NotificationService.ACTION_SEND_LARGE_ICON
+            putExtra(NotificationService.EXTRA_TITLE, title)
+            putExtra(NotificationService.EXTRA_CONTENT, content)
+            putExtra(NotificationService.EXTRA_IMPORTANCE, importance)
+        }
+
+        ContextCompat.startForegroundService(this, intent)
+        updateStatus(getString(R.string.status_large_icon_sent))
+    }
+
+    private fun sendFullScreenNotification() {
+        val title = binding.titleEditText.text.toString()
+            .ifEmpty { getString(R.string.default_notification_title) }
+        val content = binding.contentEditText.text.toString()
+            .ifEmpty { getString(R.string.default_notification_content) }
+        val importance = binding.importanceSpinner.selectedItemPosition
+
+        val intent = Intent(this, NotificationService::class.java).apply {
+            action = NotificationService.ACTION_SEND_FULLSCREEN
+            putExtra(NotificationService.EXTRA_TITLE, title)
+            putExtra(NotificationService.EXTRA_CONTENT, content)
+            putExtra(NotificationService.EXTRA_IMPORTANCE, importance)
+        }
+
+        ContextCompat.startForegroundService(this, intent)
+        updateStatus(getString(R.string.status_fullscreen_sent))
     }
 
     private fun updateStatus(message: String) {
@@ -253,29 +332,30 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
-    
+
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_main, menu)
         return true
     }
-    
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.action_info -> {
                 showInfoDialog()
                 true
             }
+
             else -> super.onOptionsItemSelected(item)
         }
     }
-    
+
     private fun showInfoDialog() {
         val versionName = BuildConfig.VERSION_NAME
         val buildTime = BuildConfig.BUILD_TIME
         val appName = BuildConfig.APP_NAME
-        
+
         val message = getString(R.string.about_message, appName, versionName, buildTime)
-        
+
         AlertDialog.Builder(this)
             .setTitle(getString(R.string.about_title))
             .setMessage(message)

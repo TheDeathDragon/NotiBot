@@ -10,9 +10,9 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
+        android:orientation="vertical"
         android:paddingTop="16dp">
 
         <!-- 自定义通知部分 -->
@@ -89,6 +89,44 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
             android:text="@string/send_delayed" />
+
+        <!-- 特殊通知部分 -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:text="@string/special_notification"
+            android:textAlignment="center"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/sendTwoActionsButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:text="@string/send_two_actions" />
+
+        <Button
+            android:id="@+id/sendOneActionButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:text="@string/send_one_action" />
+
+        <Button
+            android:id="@+id/sendLargeIconButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:text="@string/send_large_icon" />
+
+        <Button
+            android:id="@+id/sendFullScreenButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:text="@string/send_fullscreen" />
 
         <!-- 随机通知部分 -->
         <TextView
