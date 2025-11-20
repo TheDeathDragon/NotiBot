@@ -59,6 +59,8 @@ class NotificationService : Service() {
             ACTION_SEND_ONE_ACTION -> sendNotificationWithOneAction(intent)
             ACTION_SEND_LARGE_ICON -> sendNotificationWithLargeIcon(intent)
             ACTION_SEND_FULLSCREEN -> sendFullScreenNotification(intent)
+            ACTION_SEND_FULLSCREEN_ONE_ACTION -> sendFullScreenNotificationOneAction(intent)
+            ACTION_SEND_FULLSCREEN_TWO_ACTIONS -> sendFullScreenNotificationTwoActions(intent)
         }
         return START_STICKY
     }
@@ -191,7 +193,7 @@ class NotificationService : Service() {
         val title = randomTitles.random()
         val content = randomContents.random()
         val importance = Random.nextInt(4)
-        val notificationType = Random.nextInt(5)
+        val notificationType = Random.nextInt(7)
 
         when (notificationType) {
             0 -> showNotification(title, content, importance)
@@ -199,6 +201,8 @@ class NotificationService : Service() {
             2 -> showNotificationWithOneAction(title, content)
             3 -> showNotificationWithLargeIcon(title, content, importance)
             4 -> showFullScreenNotification(title, content)
+            5 -> showFullScreenNotificationOneAction(title, content)
+            6 -> showFullScreenNotificationTwoActions(title, content)
         }
     }
 
@@ -401,6 +405,22 @@ class NotificationService : Service() {
         showFullScreenNotification(title, content)
     }
 
+    private fun sendFullScreenNotificationOneAction(intent: Intent) {
+        val title =
+            intent.getStringExtra(EXTRA_TITLE) ?: getString(R.string.default_notification_title)
+        val content =
+            intent.getStringExtra(EXTRA_CONTENT) ?: getString(R.string.default_notification_content)
+        showFullScreenNotificationOneAction(title, content)
+    }
+
+    private fun sendFullScreenNotificationTwoActions(intent: Intent) {
+        val title =
+            intent.getStringExtra(EXTRA_TITLE) ?: getString(R.string.default_notification_title)
+        val content =
+            intent.getStringExtra(EXTRA_CONTENT) ?: getString(R.string.default_notification_content)
+        showFullScreenNotificationTwoActions(title, content)
+    }
+
     private fun showFullScreenNotification(title: String, content: String) {
         val channelId = MainActivity.CHANNEL_ID_HIGH
         val priority = NotificationCompat.PRIORITY_HIGH
@@ -441,6 +461,112 @@ class NotificationService : Service() {
             .setAutoCancel(true)
             .setOngoing(true)
             .setVibrate(longArrayOf(0, 500, 200, 500))
+            .addAction(R.drawable.ic_stop, getString(R.string.action_dismiss), dismissPendingIntent)
+            .build()
+
+        val notificationManager =
+            getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager.notify(currentNotificationId, notification)
+    }
+
+    private fun showFullScreenNotificationOneAction(title: String, content: String) {
+        val channelId = MainActivity.CHANNEL_ID_HIGH
+        val priority = NotificationCompat.PRIORITY_HIGH
+
+        val currentNotificationId = notificationId++
+
+        val fullScreenIntent = Intent(this, FullScreenNotificationActivity::class.java).apply {
+            putExtra(FullScreenNotificationActivity.EXTRA_TITLE, title)
+            putExtra(FullScreenNotificationActivity.EXTRA_CONTENT, content)
+            putExtra(FullScreenNotificationActivity.EXTRA_NOTIFICATION_ID, currentNotificationId)
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
+        }
+        val fullScreenPendingIntent = PendingIntent.getActivity(
+            this, currentNotificationId, fullScreenIntent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+
+        val largeIconResId = getRandomLargeIcon()
+        val largeIcon = BitmapFactory.decodeResource(resources, largeIconResId)
+
+        val dismissIntent = Intent(this, NotificationActionReceiver::class.java).apply {
+            action = NotificationActionReceiver.ACTION_DISMISS
+            putExtra(NotificationActionReceiver.EXTRA_NOTIFICATION_ID, currentNotificationId)
+        }
+        val dismissPendingIntent = PendingIntent.getBroadcast(
+            this, currentNotificationId * 10 + 1, dismissIntent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+
+        val notification = NotificationCompat.Builder(this, channelId)
+            .setContentTitle(title)
+            .setContentText(content)
+            .setSmallIcon(R.drawable.ic_timer)
+            .setLargeIcon(largeIcon)
+            .setPriority(priority)
+            .setCategory(NotificationCompat.CATEGORY_ALARM)
+            .setFullScreenIntent(fullScreenPendingIntent, true)
+            .setAutoCancel(true)
+            .setOngoing(true)
+            .setVibrate(longArrayOf(0, 500, 200, 500))
+            .addAction(R.drawable.ic_stop, getString(R.string.action_dismiss), dismissPendingIntent)
+            .build()
+
+        val notificationManager =
+            getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager.notify(currentNotificationId, notification)
+    }
+
+    private fun showFullScreenNotificationTwoActions(title: String, content: String) {
+        val channelId = MainActivity.CHANNEL_ID_HIGH
+        val priority = NotificationCompat.PRIORITY_HIGH
+
+        val currentNotificationId = notificationId++
+
+        val fullScreenIntent = Intent(this, FullScreenNotificationActivity::class.java).apply {
+            putExtra(FullScreenNotificationActivity.EXTRA_TITLE, title)
+            putExtra(FullScreenNotificationActivity.EXTRA_CONTENT, content)
+            putExtra(FullScreenNotificationActivity.EXTRA_NOTIFICATION_ID, currentNotificationId)
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
+        }
+        val fullScreenPendingIntent = PendingIntent.getActivity(
+            this, currentNotificationId, fullScreenIntent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+
+        val largeIconResId = getRandomLargeIcon()
+        val largeIcon = BitmapFactory.decodeResource(resources, largeIconResId)
+
+        val snoozeIntent = Intent(this, NotificationActionReceiver::class.java).apply {
+            action = NotificationActionReceiver.ACTION_DISMISS
+            putExtra(NotificationActionReceiver.EXTRA_NOTIFICATION_ID, currentNotificationId)
+        }
+        val snoozePendingIntent = PendingIntent.getBroadcast(
+            this, currentNotificationId * 10 + 1, snoozeIntent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+
+        val dismissIntent = Intent(this, NotificationActionReceiver::class.java).apply {
+            action = NotificationActionReceiver.ACTION_DISMISS
+            putExtra(NotificationActionReceiver.EXTRA_NOTIFICATION_ID, currentNotificationId)
+        }
+        val dismissPendingIntent = PendingIntent.getBroadcast(
+            this, currentNotificationId * 10 + 2, dismissIntent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+
+        val notification = NotificationCompat.Builder(this, channelId)
+            .setContentTitle(title)
+            .setContentText(content)
+            .setSmallIcon(R.drawable.ic_timer)
+            .setLargeIcon(largeIcon)
+            .setPriority(priority)
+            .setCategory(NotificationCompat.CATEGORY_ALARM)
+            .setFullScreenIntent(fullScreenPendingIntent, true)
+            .setAutoCancel(true)
+            .setOngoing(true)
+            .setVibrate(longArrayOf(0, 500, 200, 500))
+            .addAction(R.drawable.ic_timer, getString(R.string.action_snooze), snoozePendingIntent)
             .addAction(R.drawable.ic_stop, getString(R.string.action_dismiss), dismissPendingIntent)
             .build()
 

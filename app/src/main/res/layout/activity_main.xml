@@ -125,8 +125,22 @@
             android:id="@+id/sendFullScreenButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
+            android:layout_marginBottom="8dp"
             android:text="@string/send_fullscreen" />
+
+        <Button
+            android:id="@+id/sendFullScreenOneActionButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:text="@string/send_fullscreen_one_action" />
+
+        <Button
+            android:id="@+id/sendFullScreenTwoActionsButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:text="@string/send_fullscreen_two_actions" />
 
         <!-- 随机通知部分 -->
         <TextView

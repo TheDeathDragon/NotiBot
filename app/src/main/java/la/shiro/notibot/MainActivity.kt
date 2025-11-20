@@ -85,6 +85,8 @@ class MainActivity : AppCompatActivity() {
         binding.sendOneActionButton.setOnClickListener { sendNotificationWithOneAction() }
         binding.sendLargeIconButton.setOnClickListener { sendNotificationWithLargeIcon() }
         binding.sendFullScreenButton.setOnClickListener { sendFullScreenNotification() }
+        binding.sendFullScreenOneActionButton.setOnClickListener { sendFullScreenNotificationOneAction() }
+        binding.sendFullScreenTwoActionsButton.setOnClickListener { sendFullScreenNotificationTwoActions() }
         binding.startRandomButton.setOnClickListener { startRandomNotifications() }
         binding.stopRandomButton.setOnClickListener { stopRandomNotifications() }
     }
@@ -311,6 +313,42 @@ class MainActivity : AppCompatActivity() {
 
         ContextCompat.startForegroundService(this, intent)
         updateStatus(getString(R.string.status_fullscreen_sent))
+    }
+
+    private fun sendFullScreenNotificationOneAction() {
+        val title = binding.titleEditText.text.toString()
+            .ifEmpty { getString(R.string.default_notification_title) }
+        val content = binding.contentEditText.text.toString()
+            .ifEmpty { getString(R.string.default_notification_content) }
+        val importance = binding.importanceSpinner.selectedItemPosition
+
+        val intent = Intent(this, NotificationService::class.java).apply {
+            action = NotificationService.ACTION_SEND_FULLSCREEN_ONE_ACTION
+            putExtra(NotificationService.EXTRA_TITLE, title)
+            putExtra(NotificationService.EXTRA_CONTENT, content)
+            putExtra(NotificationService.EXTRA_IMPORTANCE, importance)
+        }
+
+        ContextCompat.startForegroundService(this, intent)
+        updateStatus(getString(R.string.status_fullscreen_one_action_sent))
+    }
+
+    private fun sendFullScreenNotificationTwoActions() {
+        val title = binding.titleEditText.text.toString()
+            .ifEmpty { getString(R.string.default_notification_title) }
+        val content = binding.contentEditText.text.toString()
+            .ifEmpty { getString(R.string.default_notification_content) }
+        val importance = binding.importanceSpinner.selectedItemPosition
+
+        val intent = Intent(this, NotificationService::class.java).apply {
+            action = NotificationService.ACTION_SEND_FULLSCREEN_TWO_ACTIONS
+            putExtra(NotificationService.EXTRA_TITLE, title)
+            putExtra(NotificationService.EXTRA_CONTENT, content)
+            putExtra(NotificationService.EXTRA_IMPORTANCE, importance)
+        }
+
+        ContextCompat.startForegroundService(this, intent)
+        updateStatus(getString(R.string.status_fullscreen_two_actions_sent))
     }
 
     private fun updateStatus(message: String) {

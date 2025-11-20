@@ -17,6 +17,8 @@
     <string name="send_one_action">Send with One Action</string>
     <string name="send_large_icon">Send with Large Icon</string>
     <string name="send_fullscreen">Send Full-Screen Notification</string>
+    <string name="send_fullscreen_one_action">Full-Screen + One Action</string>
+    <string name="send_fullscreen_two_actions">Full-Screen + Two Actions</string>
 
     <string name="random_notification">Random Notification</string>
     <string name="interval_seconds_hint">Interval (seconds)</string>
@@ -36,6 +38,8 @@
     <string name="status_one_action_sent">Notification with one action sent</string>
     <string name="status_large_icon_sent">Notification with large icon sent</string>
     <string name="status_fullscreen_sent">Full-screen notification sent</string>
+    <string name="status_fullscreen_one_action_sent">Full-screen notification with one action sent</string>
+    <string name="status_fullscreen_two_actions_sent">Full-screen notification with two actions sent</string>
 
     <!-- Notification importance -->
     <string name="importance_high">High</string>

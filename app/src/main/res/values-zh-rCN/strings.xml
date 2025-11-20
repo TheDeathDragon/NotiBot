@@ -17,6 +17,8 @@
     <string name="send_one_action">发送带一个操作的通知</string>
     <string name="send_large_icon">发送带大图标的通知</string>
     <string name="send_fullscreen">发送全屏通知</string>
+    <string name="send_fullscreen_one_action">全屏通知 + 一个操作</string>
+    <string name="send_fullscreen_two_actions">全屏通知 + 两个操作</string>
 
     <string name="random_notification">随机通知</string>
     <string name="interval_seconds_hint">间隔时间（秒）</string>
@@ -36,6 +38,8 @@
     <string name="status_one_action_sent">已发送带一个操作的通知</string>
     <string name="status_large_icon_sent">已发送带大图标的通知</string>
     <string name="status_fullscreen_sent">已发送全屏通知</string>
+    <string name="status_fullscreen_one_action_sent">已发送带一个操作的全屏通知</string>
+    <string name="status_fullscreen_two_actions_sent">已发送带两个操作的全屏通知</string>
 
     <!-- 通知重要性 -->
     <string name="importance_high">高重要性</string>
